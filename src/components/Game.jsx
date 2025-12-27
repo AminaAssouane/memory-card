@@ -5,8 +5,8 @@ import { Score } from "./Score.jsx";
 
 export function Game() {
   const [cards, setCards] = useState([]);
-  const [currentScore, setCurrentScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
+  const currentScore = cards.filter((card) => card.clicked).length;
 
   useEffect(() => {
     async function fetchPokemon() {
@@ -86,7 +86,6 @@ export function Game() {
         setBestScore((prevBest) =>
           currentScore > prevBest ? currentScore : prevBest
         );
-        setCurrentScore(0);
 
         return shuffle(
           prevCards.map((card) => ({
@@ -97,9 +96,6 @@ export function Game() {
       }
 
       // If it's a correct click
-      console.log("add score");
-      setCurrentScore((prev) => prev + 1);
-
       const updatedCards = prevCards.map((card) =>
         card.id === id ? { ...card, clicked: true } : card
       );
@@ -112,7 +108,7 @@ export function Game() {
     <>
       <h1>Memory card game</h1>
       <Score currentScore={currentScore} bestScore={bestScore} />
-      <Board cards={cards} onClick={handleCardClick} />
+      <Board cards={shuffle(cards)} onClick={handleCardClick} />
     </>
   );
 }
