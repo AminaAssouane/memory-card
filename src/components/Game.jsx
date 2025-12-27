@@ -36,7 +36,18 @@ export function Game() {
     fetchPokemon();
   }, []);
 
-  function shuffle() {}
+  function shuffle() {
+    let currentIndex = cards.length;
+    let newCards = [...cards];
+    while (currentIndex != 0) {
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      let temp = newCards[currentIndex];
+      newCards[currentIndex] = newCards[randomIndex];
+      newCards[randomIndex] = temp;
+    }
+    setCards(newCards);
+  }
 
   return (
     <>

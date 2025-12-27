@@ -5,7 +5,7 @@
 }
 
 body {
-  background-color: lavender;
+  background-color: white;
 }
 
 .layout {
@@ -18,7 +18,7 @@ body {
 }
 
 .card {
-  background-color: yellow;
+  background-color: lavender;
   border-radius: 20px;
   cursor: pointer;
   width: 100px;
