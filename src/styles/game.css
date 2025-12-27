@@ -26,3 +26,7 @@ body {
   text-align: center;
   border: 1px solid purple;
 }
+
+.card:hover {
+  background-color: rgb(156, 127, 243);
+}

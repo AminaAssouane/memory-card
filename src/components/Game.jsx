@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { Card } from "./Card.jsx";
 import { Board } from "./Board.jsx";
+import { Score } from "./Score.jsx";
 
 export function Game() {
-  console.log("game logging");
   const [cards, setCards] = useState([]);
-  const [board, setBoard] = useState(cards);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   useEffect(() => {
-    console.log("useEffect running");
-
     async function fetchPokemon() {
       const ids = [6, 8, 12, 14, 16, 21, 26, 35, 66, 67, 100, 120];
 
@@ -22,7 +21,6 @@ export function Game() {
       const results = await Promise.all(promises);
 
       const pokemonCards = results.map((pokemon) => ({
-        key: pokemon.id,
         id: pokemon.id,
         name: pokemon.name,
         imgUrl: pokemon.sprites.front_default,
@@ -36,23 +34,85 @@ export function Game() {
     fetchPokemon();
   }, []);
 
-  function shuffle() {
-    let currentIndex = cards.length;
-    let newCards = [...cards];
-    while (currentIndex != 0) {
+  function shuffle(cardsToShuffle) {
+    let currentIndex = cardsToShuffle.length;
+    let newCards = [...cardsToShuffle];
+
+    while (currentIndex !== 0) {
       let randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
-      let temp = newCards[currentIndex];
-      newCards[currentIndex] = newCards[randomIndex];
-      newCards[randomIndex] = temp;
+      [newCards[currentIndex], newCards[randomIndex]] = [
+        newCards[randomIndex],
+        newCards[currentIndex],
+      ];
     }
-    setCards(newCards);
+
+    return newCards;
+  }
+
+  /* Wrong function : 
+  function handleCardClick(id) {
+    let lost = false;
+    setCards((prevCards) => {
+      const updatedCards = prevCards.map((card) => {
+        if (card.id !== id) {
+          console.log("hope i aint here");
+          return card;
+        } else {
+          if (!card.clicked) {
+            console.log("in the if");
+            return { ...card, clicked: true };
+          } else {
+            console.log("in the else");
+            lost = true;
+            return card;
+          }
+        }
+      });
+      return updatedCards;
+    });
+    if (!lost) {
+      setCurrentScore((prev) => prev + 1);
+      shuffle();
+    } else loseGame();
+  }*/
+
+  function handleCardClick(id) {
+    setCards((prevCards) => {
+      const clickedCard = prevCards.find((card) => card.id === id);
+
+      // If we lose
+      if (clickedCard.clicked) {
+        setBestScore((prevBest) =>
+          currentScore > prevBest ? currentScore : prevBest
+        );
+        setCurrentScore(0);
+
+        return shuffle(
+          prevCards.map((card) => ({
+            ...card,
+            clicked: false,
+          }))
+        );
+      }
+
+      // If it's a correct click
+      console.log("add score");
+      setCurrentScore((prev) => prev + 1);
+
+      const updatedCards = prevCards.map((card) =>
+        card.id === id ? { ...card, clicked: true } : card
+      );
+
+      return shuffle(updatedCards);
+    });
   }
 
   return (
     <>
       <h1>Memory card game</h1>
-      <Board cards={cards} />
+      <Score currentScore={currentScore} bestScore={bestScore} />
+      <Board cards={cards} onClick={handleCardClick} />
     </>
   );
 }
