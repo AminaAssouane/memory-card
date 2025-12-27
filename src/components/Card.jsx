@@ -1,6 +1,6 @@
-export function Card({ id, name, imgUrl, onClick }) {
+export function Card({ key, id, name, imgUrl, clicked }) {
   return (
-    <div className="card" onClick={() => onClick(id)}>
+    <div className="card">
       <img src={imgUrl} alt={name} />
       <p>{name}</p>
     </div>

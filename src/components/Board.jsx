@@ -9,7 +9,7 @@ export function Board({ cards }) {
           id={card.id}
           name={card.name}
           imgUrl={card.imgUrl}
-          onClick={handleCardClick}
+          clicked={card.clicked}
         />
       ))}
     </>
